@@ -1,0 +1,3 @@
+[submodule "Sources/CJPEGXL/libjxl"]
+	path = Sources/CJPEGXL/libjxl
+	url = https://github.com/libjxl/libjxl
