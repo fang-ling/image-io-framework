@@ -24,9 +24,48 @@ import PackageDescription
 let package = Package(
   name: "image-io-framework",
   products: [
-
+    .executable(name: "cjxl", targets: ["cjxl"])
   ],
   targets: [
+    .executableTarget(
+      name: "cjxl",
+      dependencies: ["CJPEGXL", "CPNG"],
+      path: "Sources/CJPEGXL/libjxl",
+      exclude: [
+        "third_party",
+
+        "lib/extras/dec/color_description_test.cc",
+        "lib/extras/dec/jpegli.cc",
+        "lib/extras/dec/pgx_test.cc",
+
+        "lib/extras/enc/jpegli.cc",
+
+        "lib/extras/codec_test.cc",
+        "lib/extras/compressed_icc_test.cc",
+        "lib/extras/gain_map_test.cc",
+        "lib/extras/tone_mapping_gbench.cc",
+
+        "lib/extras/LICENSE.apngdis",
+        "lib/extras/README.md"
+      ],
+      sources: [
+        "tools/cjxl_main.cc",
+        "tools/cmdline.cc",
+        "tools/codec_config.cc",
+        "tools/speed_stats.cc",
+        "tools/tool_version.cc",
+        "lib/extras"
+      ],
+      publicHeadersPath: ".",
+      cSettings: [
+        .headerSearchPath("../extra"),
+        .headerSearchPath("../../CPNG/extra"),
+        .define("JPEGXL_VERSION", to: #""0.11.1""#),
+        .define("JPEGXL_ENABLE_APNG", to: "1"),
+        .define("JPEGXL_ENABLE_JPEG", to: "0"),
+        .define("JPEGXL_ENABLE_JPEGLI", to: "0")
+      ]
+    ),
     .target(
       name: "CJPEGXL",
       dependencies: [
@@ -121,6 +160,8 @@ let package = Package(
     .target(
       name: "CPNG",
       exclude: [
+        "libpng/pngtest.c",
+
         "libpng/contrib",
         "libpng/scripts"
       ],
