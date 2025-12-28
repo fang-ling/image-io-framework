@@ -119,6 +119,17 @@ let package = Package(
       ]
     ),
     .target(
+      name: "CPNG",
+      exclude: [
+        "libpng/contrib",
+        "libpng/scripts"
+      ],
+      publicHeadersPath: "libpng",
+      cSettings: [
+        .headerSearchPath("extra")
+      ]
+    ),
+    .target(
       name: "CBrotli",
       path: "Sources/CJPEGXL/libjxl/third_party/brotli/c",
       exclude: ["fuzz", "tools"],
