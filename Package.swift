@@ -24,11 +24,28 @@ import PackageDescription
 let package = Package(
   name: "image-io-framework",
   products: [
-    .executable(name: "cjxl", targets: ["cjxl"])
+    .executable(name: "cjxl", targets: ["cjxl"]),
+    .executable(name: "djxl", targets: ["djxl"])
   ],
   targets: [
     .executableTarget(
       name: "cjxl",
+      dependencies: ["CJPEGXL", "CPNG", "_CJPEGXLExtras"],
+      path: "Sources/CJPEGXL/libjxl",
+      exclude: ["third_party"],
+      sources: ["tools/cjxl_main.cc"],
+      cSettings: [.headerSearchPath("../extra")]
+    ),
+    .executableTarget(
+      name: "djxl",
+      dependencies: ["CJPEGXL", "CPNG", "_CJPEGXLExtras"],
+      path: "Sources/CJPEGXL/libjxl",
+      exclude: ["third_party"],
+      sources: ["tools/djxl_main.cc"],
+      cSettings: [.headerSearchPath("../extra")]
+    ),
+    .target(
+      name: "_CJPEGXLExtras",
       dependencies: ["CJPEGXL", "CPNG"],
       path: "Sources/CJPEGXL/libjxl",
       exclude: [
@@ -49,7 +66,6 @@ let package = Package(
         "lib/extras/README.md"
       ],
       sources: [
-        "tools/cjxl_main.cc",
         "tools/cmdline.cc",
         "tools/codec_config.cc",
         "tools/speed_stats.cc",
@@ -61,9 +77,7 @@ let package = Package(
         .headerSearchPath("../extra"),
         .headerSearchPath("../../CPNG/extra"),
         .define("JPEGXL_VERSION", to: #""0.11.1""#),
-        .define("JPEGXL_ENABLE_APNG", to: "1"),
-        .define("JPEGXL_ENABLE_JPEG", to: "0"),
-        .define("JPEGXL_ENABLE_JPEGLI", to: "0")
+        .define("JPEGXL_ENABLE_APNG", to: "1")
       ]
     ),
     .target(
