@@ -1,0 +1,10 @@
+module CJPEGXL {
+  umbrella "../libjxl/lib/include/jxl"
+
+  exclude header "../libjxl/lib/include/jxl/decode_cxx.h"
+  exclude header "../libjxl/lib/include/jxl/encode_cxx.h"
+  exclude header "../libjxl/lib/include/jxl/resizable_parallel_runner_cxx.h"
+  exclude header "../libjxl/lib/include/jxl/thread_parallel_runner_cxx.h"
+
+  export *
+}

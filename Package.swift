@@ -27,14 +27,52 @@ let package = Package(
     .executable(name: "cjxl", targets: ["cjxl"]),
     .executable(name: "djxl", targets: ["djxl"])
   ],
+  dependencies: [
+    .package(path: "../foundation-framework")
+  ],
   targets: [
+    .target(
+      name: "ImageIOFramework",
+      dependencies: [
+        "ImageIOFrameworkEssentials",
+        "ImageIOFrameworkExtras"
+      ]
+    ),
+    .target(
+      name: "ImageIOFrameworkEssentials",
+      dependencies: [
+        "CJPEGXL",
+        .product(
+          name: "FoundationFramework",
+          package: "foundation-framework"
+        )
+      ],
+      publicHeadersPath: "Includes",
+      cSettings: [
+        .headerSearchPath("../CJPEGXL/extra"),
+        .headerSearchPath("../CJPEGXL/libjxl/lib/include")
+      ]
+    ),
+    .target(
+      name: "ImageIOFrameworkExtras",
+      dependencies: ["ImageIOFrameworkEssentials"]
+    ),
+    .testTarget(
+      name: "ImageIOFrameworkTests",
+      dependencies: [
+        "ImageIOFramework"
+      ]
+    ),
     .executableTarget(
       name: "cjxl",
       dependencies: ["CJPEGXL", "CPNG", "_CJPEGXLExtras"],
       path: "Sources/CJPEGXL/libjxl",
       exclude: ["third_party"],
       sources: ["tools/cjxl_main.cc"],
-      cSettings: [.headerSearchPath("../extra")]
+      cSettings: [
+        .headerSearchPath("../extra"),
+        .headerSearchPath("lib/include")
+      ]
     ),
     .executableTarget(
       name: "djxl",
@@ -42,7 +80,10 @@ let package = Package(
       path: "Sources/CJPEGXL/libjxl",
       exclude: ["third_party"],
       sources: ["tools/djxl_main.cc"],
-      cSettings: [.headerSearchPath("../extra")]
+      cSettings: [
+        .headerSearchPath("../extra"),
+        .headerSearchPath("lib/include")
+      ]
     ),
     .target(
       name: "_CJPEGXLExtras",
@@ -76,6 +117,7 @@ let package = Package(
       cSettings: [
         .headerSearchPath("../extra"),
         .headerSearchPath("../../CPNG/extra"),
+        .headerSearchPath("lib/include"),
         .define("JPEGXL_VERSION", to: #""0.11.1""#),
         .define("JPEGXL_ENABLE_APNG", to: "1")
       ]
@@ -165,9 +207,10 @@ let package = Package(
         "libjxl/lib/jxl",
         "libjxl/lib/threads"
       ],
-      publicHeadersPath: "libjxl/lib/include",
+      publicHeadersPath: "extra",
       cSettings: [
         .headerSearchPath("libjxl"),
+        .headerSearchPath("libjxl/lib/include"),
         .headerSearchPath("extra")
       ]
     ),
