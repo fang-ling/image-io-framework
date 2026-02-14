@@ -22,6 +22,8 @@
 
 #include <FoundationFramework/FoundationFramework.h>
 
+#include "ImageProperty.h"
+
 struct _ImageIO_ImageSource;
 
 typedef struct _ImageIO_ImageSource* ImageIO_ImageSource;
@@ -55,5 +57,17 @@ void ImageIO_ImageSource_Retain(ImageIO_ImageSource imageSource);
  *   not be `NULL`.
  */
 void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource);
+
+/* MARK: - Getting Information From an ImageIO_ImageSource Object */
+/**
+ * Returns the property of the image source.
+ *
+ * - Parameter imageSource: The image source that contains the image data.
+ *
+ * - Returns: An image property object associated with the image source
+ *   container.
+ */
+ImageIO_ImageProperty
+ImageIO_ImageSource_CopyProperty(ImageIO_ImageSource imageSource);
 
 #endif /* ImageSource_h */

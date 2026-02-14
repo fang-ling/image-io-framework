@@ -75,3 +75,62 @@ void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource) {
     free(imageSource);
   }
 }
+
+ImageIO_ImageProperty
+ImageIO_ImageSource_CopyProperty(ImageIO_ImageSource imageSource) {
+  ImageIO_ImageSource_Retain(imageSource);
+
+  var width = 0ull;
+  var height = 0ull;
+
+  if (imageSource->_codec == _ImageIO_ImageCodec_JPEG_XL) { /* JPEG-XL */
+    let decoder = JxlDecoderCreate(NULL);
+    if (JXL_DEC_SUCCESS != JxlDecoderSubscribeEvents(decoder,
+                                                     JXL_DEC_BASIC_INFO)) {
+      goto errorHandler;
+    }
+
+    JxlBasicInfo info;
+
+    JxlDecoderSetInput(decoder,
+                       imageSource->_imageBytes,
+                       imageSource->_imageByteCount);
+    JxlDecoderCloseInput(decoder);
+
+    while (true) {
+      let status = JxlDecoderProcessInput(decoder);
+
+      if (status == JXL_DEC_ERROR) {
+        goto errorHandler;
+      } else if (status == JXL_DEC_NEED_MORE_INPUT) {
+        goto errorHandler;
+      } else if (status == JXL_DEC_BASIC_INFO) {
+        if (JxlDecoderGetBasicInfo(decoder, &info) != JXL_DEC_SUCCESS) {
+          goto errorHandler;
+        }
+
+        width = info.xsize;
+        height = info.ysize;
+      } else if (status == JXL_DEC_SUCCESS) {
+        break;
+      } else {
+        goto errorHandler;
+      }
+    }
+  } else { /* Unsupported codec */
+    goto errorHandler;
+  }
+
+
+  let imageProperty = ImageIO_ImageProperty_Initialize();
+  _ImageIO_ImageProperty_SetWidth(imageProperty, width);
+  _ImageIO_ImageProperty_SetHeight(imageProperty, height);
+
+  ImageIO_ImageSource_Release(imageSource);
+  return imageProperty;
+
+  errorHandler: {
+    ImageIO_ImageSource_Release(imageSource);
+    return NULL;
+  }
+}
