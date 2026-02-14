@@ -25,10 +25,14 @@ let package = Package(
   name: "image-io-framework",
   products: [
     .executable(name: "cjxl", targets: ["cjxl"]),
-    .executable(name: "djxl", targets: ["djxl"])
+    .executable(name: "djxl", targets: ["djxl"]),
+    .library(name: "ImageIOFramework", targets: ["ImageIOFramework"])
   ],
   dependencies: [
-    .package(path: "../foundation-framework")
+    .package(
+      url: "https://github.com/fang-ling/foundation-framework",
+      from: "4.0.0"
+    )
   ],
   targets: [
     .target(
