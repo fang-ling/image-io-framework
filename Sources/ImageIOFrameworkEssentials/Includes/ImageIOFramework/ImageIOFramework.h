@@ -20,6 +20,7 @@
 #ifndef ImageIOFramework_h
 #define ImageIOFramework_h
 
+#include "../../ImageProperty.h"
 #include "../../ImageSource.h"
 
 #endif /* ImageIOFramework_h */
