@@ -45,6 +45,7 @@ let package = Package(
     .target(
       name: "ImageIOFrameworkEssentials",
       dependencies: [
+        "CEXIF",
         "CJPEGXL",
         .product(
           name: "FoundationFramework",
@@ -53,6 +54,8 @@ let package = Package(
       ],
       publicHeadersPath: "Includes",
       cSettings: [
+        .headerSearchPath("../CEXIF/extra"),
+        .headerSearchPath("../CEXIF/libexif"),
         .headerSearchPath("../CJPEGXL/extra"),
         .headerSearchPath("../CJPEGXL/libjxl/lib/include")
       ]
@@ -229,6 +232,26 @@ let package = Package(
       publicHeadersPath: "libpng",
       cSettings: [
         .headerSearchPath("extra")
+      ]
+    ),
+    .target(
+      name: "CEXIF",
+      exclude: [
+        "libexif/libexif/Makefile.am",
+        "libexif/libexif/libexif.sym",
+        "libexif/libexif/apple/Makefile-files",
+        "libexif/libexif/canon/Makefile-files",
+        "libexif/libexif/fuji/Makefile-files",
+        "libexif/libexif/olympus/Makefile-files",
+        "libexif/libexif/pentax/Makefile-files"
+      ],
+      sources: [
+        "libexif/libexif"
+      ],
+      publicHeadersPath: "extra",
+      cSettings: [
+        .headerSearchPath("libexif"),
+        .define("GETTEXT_PACKAGE")
       ]
     ),
     .target(

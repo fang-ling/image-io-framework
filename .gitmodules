@@ -4,3 +4,6 @@
 [submodule "Sources/CPNG/libpng"]
 	path = Sources/CPNG/libpng
 	url = https://github.com/pnggroup/libpng
+[submodule "Sources/CEXIF/libexif"]
+	path = Sources/CEXIF/libexif
+	url = https://github.com/libexif/libexif
