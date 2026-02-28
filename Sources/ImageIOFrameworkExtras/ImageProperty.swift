@@ -19,31 +19,3 @@
 
 import FoundationFramework
 import ImageIOFrameworkEssentials
-
-/* MARK: - Creating and Destroying an ImageProperty Object */
-public class ImageProperty {
-  private let _imageProperty: ImageIO_ImageProperty
-
-  public init() {
-    _imageProperty = ImageIO_ImageProperty_Initialize()
-  }
-
-  public init(cImageProperty: ImageIO_ImageProperty) {
-    _imageProperty = cImageProperty
-  }
-
-  deinit {
-    ImageIO_ImageProperty_Release(_imageProperty)
-  }
-}
-
-/* MARK: - Examining an ImageProperty Object */
-extension ImageProperty {
-  public var width: UnsignedInteger64 {
-    ImageIO_ImageProperty_GetWidth(_imageProperty)
-  }
-
-  public var height: UnsignedInteger64 {
-    ImageIO_ImageProperty_GetHeight(_imageProperty)
-  }
-}

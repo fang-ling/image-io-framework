@@ -22,7 +22,17 @@
 
 #include <FoundationFramework/FoundationFramework.h>
 
-struct _ImageIO_ImageProperty;
+#pragma clang assume_nonnull begin
+
+struct _ImageIO_ImageProperty {
+  struct Foundation_ObjectBase _objectBase;
+
+  Foundation_UnsignedInteger64 _width;
+  Foundation_UnsignedInteger64 _height;
+}
+SWIFT_NAME(ImageProperty)
+SWIFT_SHARED_REFERENCE(ImageIO_ImageProperty_Retain,
+                       ImageIO_ImageProperty_Release);
 
 typedef struct _ImageIO_ImageProperty* ImageIO_ImageProperty;
 
@@ -33,7 +43,9 @@ typedef struct _ImageIO_ImageProperty* ImageIO_ImageProperty;
  * - Returns: An image property. You're responsible for releasing this type
  *   using ``ImageIO_ImageProperty_Release``.
  */
-ImageIO_ImageProperty ImageIO_ImageProperty_Initialize();
+ImageIO_ImageProperty ImageIO_ImageProperty_Initialize(void)
+SWIFT_NAME(ImageProperty.init())
+SWIFT_RETURNS_RETAINED;
 
 /**
  * Retains an image property object.
@@ -63,7 +75,8 @@ void ImageIO_ImageProperty_Release(ImageIO_ImageProperty imageProperty);
  * - Returns: An integer that specifies the width of the image.
  */
 Foundation_UnsignedInteger64
-ImageIO_ImageProperty_GetWidth(ImageIO_ImageProperty imageProperty);
+ImageIO_ImageProperty_GetWidth(ImageIO_ImageProperty imageProperty)
+SWIFT_NAME(getter:ImageProperty.width(self:));
 
 /**
  * Returns the height of the image, in the image's coordinate space.
@@ -73,7 +86,8 @@ ImageIO_ImageProperty_GetWidth(ImageIO_ImageProperty imageProperty);
  * - Returns: An integer that specifies the height of the image.
  */
 Foundation_UnsignedInteger64
-ImageIO_ImageProperty_GetHeight(ImageIO_ImageProperty imageProperty);
+ImageIO_ImageProperty_GetHeight(ImageIO_ImageProperty imageProperty)
+SWIFT_NAME(getter:ImageProperty.height(self:));
 
 /* MARK: - Modifying an ImageIO_ImageProperty Object (Internal) */
 void _ImageIO_ImageProperty_SetWidth(ImageIO_ImageProperty imageProperty,
@@ -81,5 +95,7 @@ void _ImageIO_ImageProperty_SetWidth(ImageIO_ImageProperty imageProperty,
 
 void _ImageIO_ImageProperty_SetHeight(ImageIO_ImageProperty imageProperty,
                                       Foundation_UnsignedInteger64 height);
+
+#pragma clang assume_nonnull end
 
 #endif /* ImageProperty_h */

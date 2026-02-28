@@ -40,7 +40,7 @@ struct DecoderTests {
       )
     }
 
-    let imageSource = ImageSource(data: data)
+    let imageSource = ImageSource(data: data)!
     let imageProperty = imageSource.imageProperty
     #expect(imageProperty?.width == 3024)
     #expect(imageProperty?.height == 4032)

@@ -19,29 +19,3 @@
 
 import FoundationFramework
 import ImageIOFrameworkEssentials
-
-/* MARK: - Creating and Destroying an ImageSource Object */
-public class ImageSource {
-  private let _imageSource: ImageIO_ImageSource
-
-  public init(data: Data) {
-    _imageSource = ImageIO_ImageSource_Initialize(data.cData)
-  }
-
-  deinit {
-    ImageIO_ImageSource_Release(_imageSource)
-  }
-}
-
-/* MARK: - Getting Information From an ImageSource Object */
-extension ImageSource {
-  public var imageProperty: ImageProperty? {
-    guard let cImageProperty = ImageIO_ImageSource_CopyProperty(
-      _imageSource
-    ) else {
-      return nil
-    }
-
-    return .init(cImageProperty: cImageProperty)
-  }
-}

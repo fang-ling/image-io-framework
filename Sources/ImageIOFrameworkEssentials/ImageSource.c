@@ -23,26 +23,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum _ImageIO_ImageCodec {
-  _ImageIO_ImageCodec_JPEG_XL
-};
+#pragma clang assume_nonnull begin
 
-struct _ImageIO_ImageSource {
-  struct Foundation_ObjectBase _objectBase;
-
-  Foundation_UnsignedInteger8* _imageBytes;
-  Foundation_UnsignedInteger64 _imageByteCount;
-  enum _ImageIO_ImageCodec _codec;
-};
-
+NULLABLE
 ImageIO_ImageSource ImageIO_ImageSource_Initialize(Foundation_Data data) {
   Foundation_Data_Retain(data);
 
   let objectSize = sizeof(struct _ImageIO_ImageSource);
   let imageSource = (struct _ImageIO_ImageSource*)malloc(objectSize);
-  if (!imageSource) {
-    return NULL;
-  }
   imageSource->_objectBase.retainCount = 1;
 
   let bytes = Foundation_Data_GetBytes(data);
@@ -51,6 +39,8 @@ ImageIO_ImageSource ImageIO_ImageSource_Initialize(Foundation_Data data) {
   if (JxlSignatureCheck(bytes, count) == JXL_SIG_CONTAINER) { /* JPEG-XL */
     imageSource->_codec = _ImageIO_ImageCodec_JPEG_XL;
   } else { /* Unsupported codec */
+    Foundation_Data_Release(data);
+
     return NULL;
   }
 
@@ -73,11 +63,14 @@ void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource) {
   if (shouldDeallocate) {
     free(imageSource->_imageBytes);
     free(imageSource);
+
+    imageSource = NULL;
   }
 }
 
+NULLABLE
 ImageIO_ImageProperty
-ImageIO_ImageSource_CopyProperty(ImageIO_ImageSource imageSource) {
+ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource) {
   ImageIO_ImageSource_Retain(imageSource);
 
   var width = 0ull;
@@ -134,3 +127,5 @@ ImageIO_ImageSource_CopyProperty(ImageIO_ImageSource imageSource) {
     return NULL;
   }
 }
+
+#pragma clang assume_nonnull end

@@ -21,19 +21,11 @@
 
 #include <stdlib.h>
 
-struct _ImageIO_ImageProperty {
-  struct Foundation_ObjectBase _objectBase;
+#pragma clang assume_nonnull begin
 
-  Foundation_UnsignedInteger64 _width;
-  Foundation_UnsignedInteger64 _height;
-};
-
-ImageIO_ImageProperty ImageIO_ImageProperty_Initialize() {
+ImageIO_ImageProperty ImageIO_ImageProperty_Initialize(void) {
   let objectSize = sizeof(struct _ImageIO_ImageProperty);
   let imageProperty = (struct _ImageIO_ImageProperty*)malloc(objectSize);
-  if (!imageProperty) {
-    return NULL;
-  }
   imageProperty->_objectBase.retainCount = 1;
 
   imageProperty->_width = 0;
@@ -52,6 +44,8 @@ void ImageIO_ImageProperty_Release(ImageIO_ImageProperty imageProperty) {
 
   if (shouldDeallocate) {
     free(imageProperty);
+
+    imageProperty = NULL;
   }
 }
 
@@ -92,3 +86,5 @@ void _ImageIO_ImageProperty_SetHeight(ImageIO_ImageProperty imageProperty,
 
   ImageIO_ImageProperty_Release(imageProperty);
 }
+
+#pragma clang assume_nonnull end

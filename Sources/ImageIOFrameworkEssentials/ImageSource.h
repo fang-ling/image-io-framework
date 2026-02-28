@@ -24,7 +24,21 @@
 
 #include "ImageProperty.h"
 
-struct _ImageIO_ImageSource;
+#pragma clang assume_nonnull begin
+
+enum _ImageIO_ImageCodec {
+  _ImageIO_ImageCodec_JPEG_XL
+};
+
+struct _ImageIO_ImageSource {
+  struct Foundation_ObjectBase _objectBase;
+
+  Foundation_UnsignedInteger8* _imageBytes;
+  Foundation_UnsignedInteger64 _imageByteCount;
+  enum _ImageIO_ImageCodec _codec;
+}
+SWIFT_NAME(ImageSource)
+SWIFT_SHARED_REFERENCE(ImageIO_ImageSource_Retain, ImageIO_ImageSource_Release);
 
 typedef struct _ImageIO_ImageSource* ImageIO_ImageSource;
 
@@ -37,7 +51,10 @@ typedef struct _ImageIO_ImageSource* ImageIO_ImageSource;
  * - Returns: An image source. You're responsible for releasing this type using
  *   ``ImageIO_ImageSource_Release``.
  */
-ImageIO_ImageSource ImageIO_ImageSource_Initialize(Foundation_Data data);
+NULLABLE
+ImageIO_ImageSource ImageIO_ImageSource_Initialize(Foundation_Data data)
+SWIFT_NAME(ImageSource.init(data:))
+SWIFT_RETURNS_RETAINED;
 
 /**
  * Retains an image source object.
@@ -65,9 +82,15 @@ void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource);
  * - Parameter imageSource: The image source that contains the image data.
  *
  * - Returns: An image property object associated with the image source
- *   container.
+ *   container. You're responsible for releasing this type using
+ *   ``ImageIO_ImageProperty_Release``.
  */
+NULLABLE
 ImageIO_ImageProperty
-ImageIO_ImageSource_CopyProperty(ImageIO_ImageSource imageSource);
+ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource)
+SWIFT_NAME(getter:ImageSource.imageProperty(self:))
+SWIFT_RETURNS_RETAINED;
+
+#pragma clang assume_nonnull end
 
 #endif /* ImageSource_h */
