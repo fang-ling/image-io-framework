@@ -24,7 +24,7 @@
 
 #include "ImageProperty.h"
 
-#pragma clang assume_nonnull begin
+ASSUME_NONNULL_BEGIN
 
 enum _ImageIO_ImageCodec {
   _ImageIO_ImageCodec_JPEG_XL
@@ -91,6 +91,6 @@ ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource)
 SWIFT_NAME(getter:ImageSource.imageProperty(self:))
 SWIFT_RETURNS_RETAINED;
 
-#pragma clang assume_nonnull end
+ASSUME_NONNULL_END
 
 #endif /* ImageSource_h */

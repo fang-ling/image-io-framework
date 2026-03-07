@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma clang assume_nonnull begin
+ASSUME_NONNULL_BEGIN
 
 NULLABLE
 ImageIO_ImageSource ImageIO_ImageSource_Initialize(Foundation_Data data) {
@@ -128,4 +128,4 @@ ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource) {
   }
 }
 
-#pragma clang assume_nonnull end
+ASSUME_NONNULL_END

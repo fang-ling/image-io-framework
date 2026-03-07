@@ -22,7 +22,7 @@
 
 #include <FoundationFramework/FoundationFramework.h>
 
-#pragma clang assume_nonnull begin
+ASSUME_NONNULL_BEGIN
 
 struct _ImageIO_ImageProperty {
   struct Foundation_ObjectBase _objectBase;
@@ -96,6 +96,6 @@ void _ImageIO_ImageProperty_SetWidth(ImageIO_ImageProperty imageProperty,
 void _ImageIO_ImageProperty_SetHeight(ImageIO_ImageProperty imageProperty,
                                       Foundation_UnsignedInteger64 height);
 
-#pragma clang assume_nonnull end
+ASSUME_NONNULL_END
 
 #endif /* ImageProperty_h */

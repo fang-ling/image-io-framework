@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#pragma clang assume_nonnull begin
+ASSUME_NONNULL_BEGIN
 
 ImageIO_ImageProperty ImageIO_ImageProperty_Initialize(void) {
   let objectSize = sizeof(struct _ImageIO_ImageProperty);
@@ -87,4 +87,4 @@ void _ImageIO_ImageProperty_SetHeight(ImageIO_ImageProperty imageProperty,
   ImageIO_ImageProperty_Release(imageProperty);
 }
 
-#pragma clang assume_nonnull end
+ASSUME_NONNULL_END
