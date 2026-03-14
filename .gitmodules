@@ -1,9 +1,0 @@
-[submodule "Sources/CJPEGXL/libjxl"]
-	path = Sources/CJPEGXL/libjxl
-	url = https://github.com/libjxl/libjxl
-[submodule "Sources/CPNG/libpng"]
-	path = Sources/CPNG/libpng
-	url = https://github.com/pnggroup/libpng
-[submodule "Sources/CEXIF/libexif"]
-	path = Sources/CEXIF/libexif
-	url = https://github.com/libexif/libexif

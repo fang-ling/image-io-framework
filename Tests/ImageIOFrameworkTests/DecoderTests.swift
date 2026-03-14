@@ -48,7 +48,7 @@ struct DecoderTests {
 }
 
 extension DecoderTests {
-  var base64EncodedBlankJXLImageData: String {
+  var base64EncodedBlankJXLImageData: Swift.String {
     """
     AAAADEpYTCANCocKAAAAFGZ0eXBqeGwgAAAAAGp4bCAAAAAZanhscAAAAAD/Cvp96HmBBZV7qygC
     AAAATmJyb2JFeGlmG1MAAAT+bff+Nugu6C6BIPIRRJToCAPMDU4sQA80S/LSTYaNMfBUqyepM9nv
