@@ -22,9 +22,9 @@
 import PackageDescription
 
 let dependencies = [
-  ("../foundation-framework"),
-  ("../swift-exif"),
-  ("../swift-jpeg-xl")
+  ("https://github.com/fang-ling/foundation-framework", "main"),
+  ("https://github.com/fang-ling/swift-exif", "main"),
+  ("https://github.com/fang-ling/swift-jpeg-xl", "main")
 ]
 
 let package = Package(
@@ -32,7 +32,7 @@ let package = Package(
   products: [
     .library(name: "ImageIOFramework", targets: ["ImageIOFramework"])
   ],
-  dependencies: dependencies.map({ .package(path: $0) }),
+  dependencies: dependencies.map({ .package(url: $0.0, branch: $0.1) }),
   targets: [
     .target(
       name: "ImageIOFramework",
