@@ -23,13 +23,15 @@
 
 ASSUME_NONNULL_BEGIN
 
-ImageIO_ImageProperty ImageIO_ImageProperty_Initialize(void) {
+ImageIO_ImageProperty
+ImageIO_ImageProperty_Initialize(Foundation_UnsignedInteger64 width,
+                                 Foundation_UnsignedInteger64 height) {
   let objectSize = sizeof(struct _ImageIO_ImageProperty);
   let imageProperty = (struct _ImageIO_ImageProperty*)malloc(objectSize);
   imageProperty->_objectBase.retainCount = 1;
 
-  imageProperty->_width = 0;
-  imageProperty->_height = 0;
+  imageProperty->_width = width;
+  imageProperty->_height = height;
 
   return imageProperty;
 }
@@ -43,9 +45,7 @@ void ImageIO_ImageProperty_Release(ImageIO_ImageProperty imageProperty) {
     Foundation_ObjectBase_Release(&imageProperty->_objectBase);
 
   if (shouldDeallocate) {
-    free(imageProperty);
-
-    imageProperty = NULL;
+    free((struct _ImageIO_ImageProperty*)imageProperty);
   }
 }
 
@@ -67,24 +67,6 @@ ImageIO_ImageProperty_GetHeight(ImageIO_ImageProperty imageProperty) {
 
   ImageIO_ImageProperty_Release(imageProperty);
   return height;
-}
-
-void _ImageIO_ImageProperty_SetWidth(ImageIO_ImageProperty imageProperty,
-                                     Foundation_UnsignedInteger64 width) {
-  ImageIO_ImageProperty_Retain(imageProperty);
-
-  imageProperty->_width = width;
-
-  ImageIO_ImageProperty_Release(imageProperty);
-}
-
-void _ImageIO_ImageProperty_SetHeight(ImageIO_ImageProperty imageProperty,
-                                      Foundation_UnsignedInteger64 height) {
-  ImageIO_ImageProperty_Retain(imageProperty);
-
-  imageProperty->_height = height;
-
-  ImageIO_ImageProperty_Release(imageProperty);
 }
 
 ASSUME_NONNULL_END

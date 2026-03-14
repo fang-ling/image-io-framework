@@ -34,17 +34,23 @@ SWIFT_NAME(ImageProperty)
 SWIFT_SHARED_REFERENCE(ImageIO_ImageProperty_Retain,
                        ImageIO_ImageProperty_Release);
 
-typedef struct _ImageIO_ImageProperty* ImageIO_ImageProperty;
+typedef const struct _ImageIO_ImageProperty* ImageIO_ImageProperty;
 
 /* MARK: - Creating and Destroying an ImageIO_ImageProperty Object */
 /**
  * Creates a new image property.
  *
+ * - Parameters:
+ *   - width: The width of the image, in the image's coordinate space.
+ *   - height: The height of the image, in the image's coordinate space.
+ *
  * - Returns: An image property. You're responsible for releasing this type
  *   using ``ImageIO_ImageProperty_Release``.
  */
-ImageIO_ImageProperty ImageIO_ImageProperty_Initialize(void)
-SWIFT_NAME(ImageProperty.init())
+ImageIO_ImageProperty
+ImageIO_ImageProperty_Initialize(Foundation_UnsignedInteger64 width,
+                                 Foundation_UnsignedInteger64 height)
+SWIFT_NAME(ImageProperty.init(width:height:))
 SWIFT_RETURNS_RETAINED;
 
 /**
@@ -88,13 +94,6 @@ SWIFT_NAME(getter:ImageProperty.width(self:));
 Foundation_UnsignedInteger64
 ImageIO_ImageProperty_GetHeight(ImageIO_ImageProperty imageProperty)
 SWIFT_NAME(getter:ImageProperty.height(self:));
-
-/* MARK: - Modifying an ImageIO_ImageProperty Object (Internal) */
-void _ImageIO_ImageProperty_SetWidth(ImageIO_ImageProperty imageProperty,
-                                     Foundation_UnsignedInteger64 width);
-
-void _ImageIO_ImageProperty_SetHeight(ImageIO_ImageProperty imageProperty,
-                                      Foundation_UnsignedInteger64 height);
 
 ASSUME_NONNULL_END
 

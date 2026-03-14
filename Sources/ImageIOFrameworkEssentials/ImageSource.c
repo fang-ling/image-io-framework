@@ -44,11 +44,8 @@ ImageIO_ImageSource ImageIO_ImageSource_Initialize(Foundation_Data data) {
     return NULL;
   }
 
-  imageSource->_imageByteCount = count;
-  imageSource->_imageBytes = malloc(count);
-  memcpy(imageSource->_imageBytes, bytes, count);
+  imageSource->_imageData = data;
 
-  Foundation_Data_Release(data);
   return imageSource;
 }
 
@@ -61,10 +58,8 @@ void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource) {
     Foundation_ObjectBase_Release(&imageSource->_objectBase);
 
   if (shouldDeallocate) {
-    free(imageSource->_imageBytes);
-    free(imageSource);
-
-    imageSource = NULL;
+    Foundation_Data_Release(imageSource->_imageData);
+    free((struct _ImageIO_ImageSource*)imageSource);
   }
 }
 
@@ -83,13 +78,12 @@ ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource) {
       goto errorHandler;
     }
 
-    JxlBasicInfo info;
-
     JxlDecoderSetInput(decoder,
-                       imageSource->_imageBytes,
-                       imageSource->_imageByteCount);
+                       Foundation_Data_GetBytes(imageSource->_imageData),
+                       Foundation_Data_GetCount(imageSource->_imageData));
     JxlDecoderCloseInput(decoder);
 
+    var info = (JxlBasicInfo){ 0 };
     while (true) {
       let status = JxlDecoderProcessInput(decoder);
 
@@ -114,10 +108,7 @@ ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource) {
     goto errorHandler;
   }
 
-
-  let imageProperty = ImageIO_ImageProperty_Initialize();
-  _ImageIO_ImageProperty_SetWidth(imageProperty, width);
-  _ImageIO_ImageProperty_SetHeight(imageProperty, height);
+  let imageProperty = ImageIO_ImageProperty_Initialize(width, height);
 
   ImageIO_ImageSource_Release(imageSource);
   return imageProperty;
