@@ -70,6 +70,7 @@ struct DecoderTests {
     #expect(
       metadata?.exifDateTimeOriginal == String(cString: "2025:11:14 21:54:18")
     )
+    #expect(metadata?.exifOffsetTimeOriginal == String(cString: "+08:00"))
   }
 }
 

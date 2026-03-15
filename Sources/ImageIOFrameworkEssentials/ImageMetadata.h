@@ -30,6 +30,7 @@ struct _ImageIO_ImageMetadata {
   Foundation_UnsignedInteger64 _width;
   Foundation_UnsignedInteger64 _height;
   NULLABLE Foundation_String _exifDateTimeOriginal;
+  NULLABLE Foundation_String _exifOffsetTimeOriginal;
 }
 SWIFT_NAME(ImageMetadata)
 SWIFT_SHARED_REFERENCE(ImageIO_ImageMetadata_Retain,
@@ -55,6 +56,7 @@ SWIFT_SHARED_REFERENCE(ImageIO_ImageMetadata_Retain,
  * - ``ImageIO_ImageMetadata_GetWidth``
  * - ``ImageIO_ImageMetadata_GetHeight``
  * - ``ImageIO_ImageMetadata_GetEXIFDateTimeOriginal``
+ * - ``ImageIO_ImageMetadata_GetEXIFOffsetTimeOriginal``
  */
 typedef const struct _ImageIO_ImageMetadata* ImageIO_ImageMetadata;
 
@@ -136,6 +138,22 @@ ImageIO_ImageMetadata_GetEXIFDateTimeOriginal(
   ImageIO_ImageMetadata imageMetadata
 )
 SWIFT_NAME(getter:ImageMetadata.exifDateTimeOriginal(self:));
+
+/**
+ * Returns the offset from UTC (the time difference from Universal Time
+ * Coordinated including daylight saving time) of the time of
+ * `DateTimeOriginal`.
+ *
+ * - Parameter imageMetadata: The image metadata object to examine.
+ *
+ * - Returns: A string that specifies the offset from UTC of the original date
+ *   and time.
+ */
+NULLABLE Foundation_String
+ImageIO_ImageMetadata_GetEXIFOffsetTimeOriginal(
+  ImageIO_ImageMetadata imageMetadata
+)
+SWIFT_NAME(getter:ImageMetadata.exifOffsetTimeOriginal(self:));
 
 ASSUME_NONNULL_END
 

@@ -28,7 +28,13 @@ NULLABLE ImageIO_ImageMetadata
 ImageIO_ImageMetadata_Initialize(Foundation_UnsignedInteger64 width,
                                  Foundation_UnsignedInteger64 height,
                                  NULLABLE Foundation_Data exifData) {
+  /*
+   * Ownership of these objects will be transferred to the imageMetadata object,
+   * so we don't need to release them here.
+   */
   var dateTimeOriginal = (Foundation_String)NULL;
+  var offsetTimeOriginal = (Foundation_String)NULL;
+
   if (exifData) {
     Foundation_Data_Retain(exifData);
 
@@ -40,10 +46,18 @@ ImageIO_ImageMetadata_Initialize(Foundation_UnsignedInteger64 width,
     );
 
     if (exif) {
-      let entry = exif_content_get_entry(exif->ifd[EXIF_IFD_EXIF],
+      var entry = exif_content_get_entry(exif->ifd[EXIF_IFD_EXIF],
                                          EXIF_TAG_DATE_TIME_ORIGINAL);
       if (entry) {
         dateTimeOriginal = Foundation_String_InitializeWithCString(
+          (Foundation_CString)entry->data
+        );
+      }
+
+      entry = exif_content_get_entry(exif->ifd[EXIF_IFD_EXIF],
+                                     EXIF_TAG_OFFSET_TIME_ORIGINAL);
+      if (entry) {
+        offsetTimeOriginal = Foundation_String_InitializeWithCString(
           (Foundation_CString)entry->data
         );
       }
@@ -61,6 +75,7 @@ ImageIO_ImageMetadata_Initialize(Foundation_UnsignedInteger64 width,
   imageMetadata->_width = width;
   imageMetadata->_height = height;
   imageMetadata->_exifDateTimeOriginal = dateTimeOriginal;
+  imageMetadata->_exifOffsetTimeOriginal = offsetTimeOriginal;
 
   return imageMetadata;
 }
@@ -76,6 +91,9 @@ void ImageIO_ImageMetadata_Release(ImageIO_ImageMetadata imageMetadata) {
   if (shouldDeallocate) {
     if (imageMetadata->_exifDateTimeOriginal != NULL) {
       Foundation_String_Release(imageMetadata->_exifDateTimeOriginal);
+    }
+    if (imageMetadata->_exifOffsetTimeOriginal != NULL) {
+      Foundation_String_Release(imageMetadata->_exifOffsetTimeOriginal);
     }
     free((struct _ImageIO_ImageMetadata*)imageMetadata);
   }
@@ -111,6 +129,18 @@ ImageIO_ImageMetadata_GetEXIFDateTimeOriginal(
 
   ImageIO_ImageMetadata_Release(imageMetadata);
   return exifDateTimeOriginal;
+}
+
+NULLABLE Foundation_String
+ImageIO_ImageMetadata_GetEXIFOffsetTimeOriginal(
+  ImageIO_ImageMetadata imageMetadata
+) {
+  ImageIO_ImageMetadata_Retain(imageMetadata);
+
+  let exifOffsetTimeOriginal = imageMetadata->_exifOffsetTimeOriginal;
+
+  ImageIO_ImageMetadata_Release(imageMetadata);
+  return exifOffsetTimeOriginal;
 }
 
 ASSUME_NONNULL_END
