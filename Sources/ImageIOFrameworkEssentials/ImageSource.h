@@ -22,7 +22,7 @@
 
 #include <FoundationFramework/FoundationFramework.h>
 
-#include "ImageProperty.h"
+#include "ImageMetadata.h"
 
 ASSUME_NONNULL_BEGIN
 
@@ -33,14 +33,39 @@ enum _ImageIO_ImageCodec {
 struct _ImageIO_ImageSource {
   struct Foundation_ObjectBase _objectBase;
 
-  Foundation_UnsignedInteger8* _imageBytes;
-  Foundation_UnsignedInteger64 _imageByteCount;
+  Foundation_Data _imageData;
   enum _ImageIO_ImageCodec _codec;
 }
 SWIFT_NAME(ImageSource)
 SWIFT_SHARED_REFERENCE(ImageIO_ImageSource_Retain, ImageIO_ImageSource_Release);
 
-typedef struct _ImageIO_ImageSource* ImageIO_ImageSource;
+/**
+ * An opaque type that you use to read image data from a data object.
+ *
+ * Use an ``ImageIO_ImageSource`` type to read data efficiently for most image
+ * file formats. The image source object manages the data buffers needed to load
+ * the image data and performs any operations on that data to turn it into a
+ * usable image. For example, it decompresses data stored in a compressed
+ * format. You can also use an image source to fetch or create thumbnail images
+ * and access metadata stored with the image.
+ *
+ * Create an image source object from a ``Foundation_Data`` data type. The image
+ * source object reads data from the specified type and extracts the image
+ * information for you.
+ *
+ * ## Topics
+ *
+ * ### Creating and Destroying an ImageIO_ImageSource Object
+ *
+ * - ``ImageIO_ImageSource_Initialize``
+ * - ``ImageIO_ImageSource_Retain``
+ * - ``ImageIO_ImageSource_Release``
+ *
+ * ### Getting Information From an ImageIO_ImageSource Object
+ *
+ * - ``ImageIO_ImageSource_GetImageMetadata``
+ */
+typedef const struct _ImageIO_ImageSource* ImageIO_ImageSource;
 
 /* MARK: - Creating and Destroying an ImageIO_ImageSource Object */
 /**
@@ -77,18 +102,18 @@ void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource);
 
 /* MARK: - Getting Information From an ImageIO_ImageSource Object */
 /**
- * Returns the property of the image source.
+ * Returns the metadata of the image source.
  *
  * - Parameter imageSource: The image source that contains the image data.
  *
- * - Returns: An image property object associated with the image source
+ * - Returns: An image metadata object associated with the image source
  *   container. You're responsible for releasing this type using
- *   ``ImageIO_ImageProperty_Release``.
+ *   ``ImageIO_ImageMetadata_Release``.
  */
 NULLABLE
-ImageIO_ImageProperty
-ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource)
-SWIFT_NAME(getter:ImageSource.imageProperty(self:))
+ImageIO_ImageMetadata
+ImageIO_ImageSource_GetImageMetadata(ImageIO_ImageSource imageSource)
+SWIFT_NAME(getter:ImageSource.imageMetadata(self:))
 SWIFT_RETURNS_RETAINED;
 
 ASSUME_NONNULL_END

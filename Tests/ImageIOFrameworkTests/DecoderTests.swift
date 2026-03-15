@@ -25,13 +25,13 @@ import Testing
 @Suite("DecoderTests")
 struct DecoderTests {
   @Test
-  func testDecodeMetadata() {
-    let blankJXLImageData = Data(
-      base64Encoded: base64EncodedBlankJXLImageData
+  func testDecodeDimension() {
+    let blankJPEGXLImageData = Data(
+      base64Encoded: base64EncodedBlankJPEGXLImageData
         .components(separatedBy: .newlines)
         .joined()
     )!
-    let data = blankJXLImageData.withUnsafeBytes { buffer in
+    let data = blankJPEGXLImageData.withUnsafeBytes { buffer in
       Data(
         bytes: buffer.baseAddress!.assumingMemoryBound(
           to: UnsignedInteger8.self
@@ -40,15 +40,42 @@ struct DecoderTests {
       )
     }
 
-    let imageSource = ImageSource(data: data)!
-    let imageProperty = imageSource.imageProperty
-    #expect(imageProperty?.width == 3024)
-    #expect(imageProperty?.height == 4032)
+    let source = ImageSource(data: data)!
+    let metadata = source.imageMetadata
+    #expect(metadata?.width == 3024)
+    #expect(metadata?.height == 4032)
+    #expect(metadata?.exifDateTimeOriginal == nil)
+  }
+
+  @Test
+  func testDecodeEXIF() {
+    let whiteJPEGXLImageData = Data(
+      base64Encoded: base64EncodedWhiteJPEGXLImageDataWithEXIF
+        .components(separatedBy: .newlines)
+        .joined()
+    )!
+    let data = whiteJPEGXLImageData.withUnsafeBytes { buffer in
+      Data(
+        bytes: buffer.baseAddress!.assumingMemoryBound(
+          to: UnsignedInteger8.self
+        ),
+        count: UnsignedInteger64(buffer.count)
+      )
+    }
+
+    let source = ImageSource(data: data)!
+    let metadata = source.imageMetadata
+    #expect(metadata?.width == 3024)
+    #expect(metadata?.height == 4032)
+    #expect(
+      metadata?.exifDateTimeOriginal == String(cString: "2025:11:14 21:54:18")
+    )
+    #expect(metadata?.exifOffsetTimeOriginal == String(cString: "+08:00"))
   }
 }
 
 extension DecoderTests {
-  var base64EncodedBlankJXLImageData: Swift.String {
+  var base64EncodedBlankJPEGXLImageData: Swift.String {
     """
     AAAADEpYTCANCocKAAAAFGZ0eXBqeGwgAAAAAGp4bCAAAAAZanhscAAAAAD/Cvp96HmBBZV7qygC
     AAAATmJyb2JFeGlmG1MAAAT+bff+Nugu6C6BIPIRRJToCAPMDU4sQA80S/LSTYaNMfBUqyepM9nv
@@ -99,6 +126,51 @@ extension DecoderTests {
     LCQBBkCSKBYsJAEGQJIoFiwkAQZAkigWLCQBBkCSKBYsJAEGQJIoFiwkAQZAkigWLCQBBkCSKBYs
     JAEGQJIoFiwkAQZAkigWLCQBBkCSKBYsJAEGQJIoFiwkAQZAkigWLCQBBkCSKBYsJAEGQJIoFiwk
     AQZAkigWLCQBBkCSKBYsJAEGQJIoFiwkAQZAkigWLCQBBkCSKBYsJAEGQJIoFiwkAQZAkigWLCQB
+    """
+  }
+
+  var base64EncodedWhiteJPEGXLImageDataWithEXIF: Swift.String {
+    """
+    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
+    /giNBTUJurvej4BOAAAAAAAAAEoSAA==
     """
   }
 }
