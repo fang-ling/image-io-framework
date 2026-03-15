@@ -42,7 +42,7 @@ SWIFT_SHARED_REFERENCE(ImageIO_ImageSource_Retain, ImageIO_ImageSource_Release);
 /**
  * An opaque type that you use to read image data from a data object.
  *
- * Use a ``ImageIO_ImageSource`` type to read data efficiently for most image
+ * Use an ``ImageIO_ImageSource`` type to read data efficiently for most image
  * file formats. The image source object manages the data buffers needed to load
  * the image data and performs any operations on that data to turn it into a
  * usable image. For example, it decompresses data stored in a compressed
@@ -52,6 +52,18 @@ SWIFT_SHARED_REFERENCE(ImageIO_ImageSource_Retain, ImageIO_ImageSource_Release);
  * Create an image source object from a ``Foundation_Data`` data type. The image
  * source object reads data from the specified type and extracts the image
  * information for you.
+ *
+ * ## Topics
+ *
+ * ### Creating and Destroying an ImageIO_ImageSource Object
+ *
+ * - ``ImageIO_ImageSource_Initialize``
+ * - ``ImageIO_ImageSource_Retain``
+ * - ``ImageIO_ImageSource_Release``
+ *
+ * ### Getting Information From an ImageIO_ImageSource Object
+ *
+ * - ``ImageIO_ImageSource_GetImageProperty``
  */
 typedef const struct _ImageIO_ImageSource* ImageIO_ImageSource;
 
