@@ -19,7 +19,6 @@
 
 #include "ImageSource.h"
 
-#include <libexif/exif-data.h>
 #include <jxl/decode.h>
 #include <stdlib.h>
 #include <string.h>
@@ -73,10 +72,10 @@ ImageIO_ImageSource_GetImageMetadata(ImageIO_ImageSource imageSource) {
 
   var width = 0ull;
   var height = 0ull;
+  var hasEXIF = false;
   var exifDataBuffer = (Foundation_UnsignedInteger8*)NULL;
   var exifDataBufferSize = 0u;
 
-  /* Decode metadata */
   if (imageSource->_codec == _ImageIO_ImageCodec_JPEG_XL) { /* JPEG-XL */
     jxlDecoder = JxlDecoderCreate(NULL);
     let events = JXL_DEC_BASIC_INFO | JXL_DEC_BOX;
@@ -115,18 +114,20 @@ ImageIO_ImageSource_GetImageMetadata(ImageIO_ImageSource imageSource) {
         if (exifDataBufferSize > 0) {
           var remaining = JxlDecoderReleaseBoxBuffer(jxlDecoder);
           exifDataBufferSize -= remaining;
+
           /* We already have a complete exif box; stop decoding more boxes */
           break;
         }
 
         /* Check the 4-byte box type */
         var boxType = (JxlBoxType){ 0 };
-        if (
-          JXL_DEC_SUCCESS != JxlDecoderGetBoxType(jxlDecoder, boxType, true)
-        ) {
+        if (JXL_DEC_SUCCESS != JxlDecoderGetBoxType(jxlDecoder,
+                                                    boxType,
+                                                    true)) {
           goto errorHandler;
         }
         if (memcmp(boxType, "Exif", 4) == 0) {
+          hasEXIF = true;
           exifBoxOutputOffset = 0;
           exifDataBufferSize = 4096;
           exifDataBuffer = malloc(exifDataBufferSize); /* First allocation */
@@ -161,54 +162,37 @@ ImageIO_ImageSource_GetImageMetadata(ImageIO_ImageSource imageSource) {
     goto errorHandler;
   }
 
-  /* Extract from exif */
-  var dateTimeOriginal = (Foundation_CString)NULL;
-  if (exifDataBufferSize > 4) {
-    /*
-     * The JXL exif box payload starts with a 4-byte offset (big-endian) that
-     * indicates where the actual TIFF/Exif data begins within the box.
-     */
-    let tiffBlob = exifDataBuffer + 4;
-    let tiffBlobSize = exifDataBufferSize - 4;
+  var exifData = (Foundation_Data)NULL;
+  if (hasEXIF) {
+    if (imageSource->_codec == _ImageIO_ImageCodec_JPEG_XL &&
+        exifDataBufferSize > 4) {
+      /*
+       * The JXL exif box payload starts with a 4-byte offset (big-endian) that
+       * indicates where the actual TIFF/Exif data begins within the box.
+       */
+      let offset = ((Foundation_UnsignedInteger32)exifDataBuffer[0] << 24) |
+                   ((Foundation_UnsignedInteger32)exifDataBuffer[1] << 16) |
+                   ((Foundation_UnsignedInteger32)exifDataBuffer[2] << 8)  |
+                   ((Foundation_UnsignedInteger32)exifDataBuffer[3]);
+      exifDataBuffer = realloc(exifDataBuffer,
+                               exifDataBufferSize - 4 - offset + 6);
+      memmove(exifDataBuffer + 6,
+              exifDataBuffer + 4 + offset,
+              exifDataBufferSize - 4 - offset);
+      memcpy(exifDataBuffer, "Exif\0\0", 6);
+      exifDataBufferSize = exifDataBufferSize - 4 - offset + 6;
 
-    /*
-     * libexif requires the "Exif\0\0" APP1 magic prefix to recognize the buffer
-     */
-    let wrappedSize  = 6 + tiffBlobSize;
-    let wrapped = malloc(wrappedSize);
-
-    memcpy(wrapped, "Exif\0\0", 6);
-    memcpy(wrapped + 6, tiffBlob, tiffBlobSize);
-
-    let exifData = exif_data_new_from_data(wrapped, wrappedSize);
-    free(wrapped);
-
-    if (exifData) {
-      let entry = exif_content_get_entry(exifData->ifd[EXIF_IFD_EXIF],
-                                         EXIF_TAG_DATE_TIME_ORIGINAL);
-
-      if (entry) {
-        dateTimeOriginal = strndup((Foundation_CString)entry->data,
-                                   entry->size);
-      }
-
-      exif_data_unref(exifData);
+      exifData = Foundation_Data_Initialize(exifDataBuffer, exifDataBufferSize);
     }
   }
 
-  let imageMetadata = ImageIO_ImageMetadata_Initialize(
-    width,
-    height,
-    dateTimeOriginal == NULL
-      ? NULL
-      : Foundation_String_InitializeWithCString(dateTimeOriginal)
-  );
+  let imageMetadata = ImageIO_ImageMetadata_Initialize(width, height, exifData);
 
   if (exifDataBuffer != NULL) {
     free(exifDataBuffer);
   }
-  if (dateTimeOriginal != NULL) {
-    free((void*)dateTimeOriginal);
+  if (exifData != NULL) {
+    Foundation_Data_Release(exifData);
   }
   ImageIO_ImageSource_Release(imageSource);
   return imageMetadata;

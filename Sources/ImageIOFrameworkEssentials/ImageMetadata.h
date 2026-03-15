@@ -35,26 +35,51 @@ SWIFT_NAME(ImageMetadata)
 SWIFT_SHARED_REFERENCE(ImageIO_ImageMetadata_Retain,
                        ImageIO_ImageMetadata_Release);
 
+/**
+ * An immutable object that contains the metadata associated with an image.
+ *
+ * A ``ImageIO_ImageMetadata`` object stores the metadata associated with an
+ * image. Create this object from your image’s associated metadata data, and use
+ * it to fetch individual metadata tags.
+ *
+ * ## Topics
+ *
+ * ### Creating and Destroying an ImageIO_ImageMetadata Object
+ *
+ * - ``ImageIO_ImageMetadata_Initialize``
+ * - ``ImageIO_ImageMetadata_Retain``
+ * - ``ImageIO_ImageMetadata_Release``
+ *
+ * ### Examining an ImageIO_ImageMetadata Object
+ *
+ * - ``ImageIO_ImageMetadata_GetWidth``
+ * - ``ImageIO_ImageMetadata_GetHeight``
+ * - ``ImageIO_ImageMetadata_GetEXIFDateTimeOriginal``
+ */
 typedef const struct _ImageIO_ImageMetadata* ImageIO_ImageMetadata;
 
 /* MARK: - Creating and Destroying an ImageIO_ImageMetadata Object */
 /**
- * Creates a new image metadata.
+ * Creates a collection of metadata tags from the specified metadata.
+ *
+ * Use this function to parse the raw metadata from an image and build a
+ * parseable set of metadata tags.
  *
  * - Parameters:
  *   - width: The width of the image, in the image's coordinate space.
  *   - height: The height of the image, in the image's coordinate space.
+ *   - exifData: An optional object containing EXIF data. The EXIF data must
+ *     include the packet header -- "Exif\0\0".
  *
- * - Returns: An image metadata. You're responsible for releasing this type
- *   using ``ImageIO_ImageMetadata_Release``.
+ * - Returns: A ``ImageIO_ImageMetadata`` object that contains the parsed
+ *   metadata information, or `NULL` if an error occurs. You're responsible for
+ *   releasing this type using ``ImageIO_ImageMetadata_Release``.
  */
-ImageIO_ImageMetadata
-ImageIO_ImageMetadata_Initialize(
-  Foundation_UnsignedInteger64 width,
-  Foundation_UnsignedInteger64 height,
-  NULLABLE Foundation_String exifDateTimeOriginal
-)
-SWIFT_NAME(ImageMetadata.init(width:height:exifDateTimeOriginal:))
+NULLABLE ImageIO_ImageMetadata
+ImageIO_ImageMetadata_Initialize(Foundation_UnsignedInteger64 width,
+                                 Foundation_UnsignedInteger64 height,
+                                 NULLABLE Foundation_Data exifData)
+SWIFT_NAME(ImageMetadata.init(width:height:exifData:))
 SWIFT_RETURNS_RETAINED;
 
 /**

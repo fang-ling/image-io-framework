@@ -19,18 +19,39 @@
 
 #include "ImageMetadata.h"
 
+#include <libexif/exif-data.h>
 #include <stdlib.h>
 
 ASSUME_NONNULL_BEGIN
 
-ImageIO_ImageMetadata
-ImageIO_ImageMetadata_Initialize(
-  Foundation_UnsignedInteger64 width,
-  Foundation_UnsignedInteger64 height,
-  NULLABLE Foundation_String exifDateTimeOriginal
-) {
-  if (exifDateTimeOriginal != NULL) {
-    Foundation_String_Retain(exifDateTimeOriginal);
+NULLABLE ImageIO_ImageMetadata
+ImageIO_ImageMetadata_Initialize(Foundation_UnsignedInteger64 width,
+                                 Foundation_UnsignedInteger64 height,
+                                 NULLABLE Foundation_Data exifData) {
+  var dateTimeOriginal = (Foundation_String)NULL;
+  if (exifData) {
+    Foundation_Data_Retain(exifData);
+
+    let exifDataBytes = Foundation_Data_GetBytes(exifData);
+    let exifDataCount = Foundation_Data_GetCount(exifData);
+    let exif = exif_data_new_from_data(
+      exifDataBytes,
+      (Foundation_UnsignedInteger32)exifDataCount
+    );
+
+    if (exif) {
+      let entry = exif_content_get_entry(exif->ifd[EXIF_IFD_EXIF],
+                                         EXIF_TAG_DATE_TIME_ORIGINAL);
+      if (entry) {
+        dateTimeOriginal = Foundation_String_InitializeWithCString(
+          (Foundation_CString)entry->data
+        );
+      }
+
+      exif_data_unref(exif);
+    }
+
+    Foundation_Data_Release(exifData);
   }
 
   let objectSize = sizeof(struct _ImageIO_ImageMetadata);
@@ -39,7 +60,7 @@ ImageIO_ImageMetadata_Initialize(
 
   imageMetadata->_width = width;
   imageMetadata->_height = height;
-  imageMetadata->_exifDateTimeOriginal = exifDateTimeOriginal;
+  imageMetadata->_exifDateTimeOriginal = dateTimeOriginal;
 
   return imageMetadata;
 }
