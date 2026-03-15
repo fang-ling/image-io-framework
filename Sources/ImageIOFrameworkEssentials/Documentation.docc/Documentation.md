@@ -16,4 +16,4 @@ image metadata.
 
 ### Image Metadata
 
-- ``ImageIO_ImageProperty``
+- ``ImageIO_ImageMetadata``

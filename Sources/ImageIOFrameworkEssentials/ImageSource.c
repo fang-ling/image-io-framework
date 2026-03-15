@@ -65,8 +65,8 @@ void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource) {
 }
 
 NULLABLE
-ImageIO_ImageProperty
-ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource) {
+ImageIO_ImageMetadata
+ImageIO_ImageSource_GetImageMetadata(ImageIO_ImageSource imageSource) {
   ImageIO_ImageSource_Retain(imageSource);
 
   var jxlDecoder = (JxlDecoder*)NULL;
@@ -196,7 +196,7 @@ ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource) {
     }
   }
 
-  let imageProperty = ImageIO_ImageProperty_Initialize(
+  let imageMetadata = ImageIO_ImageMetadata_Initialize(
     width,
     height,
     dateTimeOriginal == NULL
@@ -211,7 +211,7 @@ ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource) {
     free((void*)dateTimeOriginal);
   }
   ImageIO_ImageSource_Release(imageSource);
-  return imageProperty;
+  return imageMetadata;
 
   errorHandler: {
     if (exifDataBuffer != NULL) {

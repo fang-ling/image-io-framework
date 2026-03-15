@@ -22,7 +22,7 @@
 
 #include <FoundationFramework/FoundationFramework.h>
 
-#include "ImageProperty.h"
+#include "ImageMetadata.h"
 
 ASSUME_NONNULL_BEGIN
 
@@ -63,7 +63,7 @@ SWIFT_SHARED_REFERENCE(ImageIO_ImageSource_Retain, ImageIO_ImageSource_Release);
  *
  * ### Getting Information From an ImageIO_ImageSource Object
  *
- * - ``ImageIO_ImageSource_GetImageProperty``
+ * - ``ImageIO_ImageSource_GetImageMetadata``
  */
 typedef const struct _ImageIO_ImageSource* ImageIO_ImageSource;
 
@@ -102,18 +102,18 @@ void ImageIO_ImageSource_Release(ImageIO_ImageSource imageSource);
 
 /* MARK: - Getting Information From an ImageIO_ImageSource Object */
 /**
- * Returns the property of the image source.
+ * Returns the metadata of the image source.
  *
  * - Parameter imageSource: The image source that contains the image data.
  *
- * - Returns: An image property object associated with the image source
+ * - Returns: An image metadata object associated with the image source
  *   container. You're responsible for releasing this type using
- *   ``ImageIO_ImageProperty_Release``.
+ *   ``ImageIO_ImageMetadata_Release``.
  */
 NULLABLE
-ImageIO_ImageProperty
-ImageIO_ImageSource_GetImageProperty(ImageIO_ImageSource imageSource)
-SWIFT_NAME(getter:ImageSource.imageProperty(self:))
+ImageIO_ImageMetadata
+ImageIO_ImageSource_GetImageMetadata(ImageIO_ImageSource imageSource)
+SWIFT_NAME(getter:ImageSource.imageMetadata(self:))
 SWIFT_RETURNS_RETAINED;
 
 ASSUME_NONNULL_END

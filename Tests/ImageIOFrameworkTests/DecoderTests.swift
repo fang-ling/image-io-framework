@@ -40,11 +40,11 @@ struct DecoderTests {
       )
     }
 
-    let imageSource = ImageSource(data: data)!
-    let imageProperty = imageSource.imageProperty
-    #expect(imageProperty?.width == 3024)
-    #expect(imageProperty?.height == 4032)
-    #expect(imageProperty?.exifDateTimeOriginal == nil)
+    let source = ImageSource(data: data)!
+    let metadata = source.imageMetadata
+    #expect(metadata?.width == 3024)
+    #expect(metadata?.height == 4032)
+    #expect(metadata?.exifDateTimeOriginal == nil)
   }
 
   @Test
@@ -63,13 +63,12 @@ struct DecoderTests {
       )
     }
 
-    let imageSource = ImageSource(data: data)!
-    let imageProperty = imageSource.imageProperty
-    #expect(imageProperty?.width == 3024)
-    #expect(imageProperty?.height == 4032)
+    let source = ImageSource(data: data)!
+    let metadata = source.imageMetadata
+    #expect(metadata?.width == 3024)
+    #expect(metadata?.height == 4032)
     #expect(
-      imageProperty?.exifDateTimeOriginal ==
-      String(cString: "2025:11:14 21:54:18")
+      metadata?.exifDateTimeOriginal == String(cString: "2025:11:14 21:54:18")
     )
   }
 }

@@ -1,5 +1,5 @@
 //
-//  ImageProperty.h
+//  ImageMetadata.h
 //  image-io-framework
 //
 //  Created by Fang Ling on 2026/2/13.
@@ -17,101 +17,101 @@
 //  limitations under the License.
 //
 
-#ifndef ImageProperty_h
-#define ImageProperty_h
+#ifndef ImageMetadata_h
+#define ImageMetadata_h
 
 #include <FoundationFramework/FoundationFramework.h>
 
 ASSUME_NONNULL_BEGIN
 
-struct _ImageIO_ImageProperty {
+struct _ImageIO_ImageMetadata {
   struct Foundation_ObjectBase _objectBase;
 
   Foundation_UnsignedInteger64 _width;
   Foundation_UnsignedInteger64 _height;
   NULLABLE Foundation_String _exifDateTimeOriginal;
 }
-SWIFT_NAME(ImageProperty)
-SWIFT_SHARED_REFERENCE(ImageIO_ImageProperty_Retain,
-                       ImageIO_ImageProperty_Release);
+SWIFT_NAME(ImageMetadata)
+SWIFT_SHARED_REFERENCE(ImageIO_ImageMetadata_Retain,
+                       ImageIO_ImageMetadata_Release);
 
-typedef const struct _ImageIO_ImageProperty* ImageIO_ImageProperty;
+typedef const struct _ImageIO_ImageMetadata* ImageIO_ImageMetadata;
 
-/* MARK: - Creating and Destroying an ImageIO_ImageProperty Object */
+/* MARK: - Creating and Destroying an ImageIO_ImageMetadata Object */
 /**
- * Creates a new image property.
+ * Creates a new image metadata.
  *
  * - Parameters:
  *   - width: The width of the image, in the image's coordinate space.
  *   - height: The height of the image, in the image's coordinate space.
  *
- * - Returns: An image property. You're responsible for releasing this type
- *   using ``ImageIO_ImageProperty_Release``.
+ * - Returns: An image metadata. You're responsible for releasing this type
+ *   using ``ImageIO_ImageMetadata_Release``.
  */
-ImageIO_ImageProperty
-ImageIO_ImageProperty_Initialize(
+ImageIO_ImageMetadata
+ImageIO_ImageMetadata_Initialize(
   Foundation_UnsignedInteger64 width,
   Foundation_UnsignedInteger64 height,
   NULLABLE Foundation_String exifDateTimeOriginal
 )
-SWIFT_NAME(ImageProperty.init(width:height:exifDateTimeOriginal:))
+SWIFT_NAME(ImageMetadata.init(width:height:exifDateTimeOriginal:))
 SWIFT_RETURNS_RETAINED;
 
 /**
- * Retains an image property object.
+ * Retains an image metadata object.
  *
- * - Parameter imageProperty: The image property object to retain. This value
+ * - Parameter imageMetadata: The image metadata object to retain. This value
  *   must not be `NULL`.
  */
-void ImageIO_ImageProperty_Retain(ImageIO_ImageProperty imageProperty);
+void ImageIO_ImageMetadata_Retain(ImageIO_ImageMetadata imageMetadata);
 
 /**
- * Releases an image property object.
+ * Releases an image metadata object.
  *
- * If the retain count of `imageProperty` becomes zero the memory allocated to
+ * If the retain count of `imageMetadata` becomes zero the memory allocated to
  * the object is deallocated and the object is destroyed.
  *
- * - Parameter imageProperty: An image property object to release. This value
+ * - Parameter imageMetadata: An image metadata object to release. This value
  *   must not be `NULL`.
  */
-void ImageIO_ImageProperty_Release(ImageIO_ImageProperty imageProperty);
+void ImageIO_ImageMetadata_Release(ImageIO_ImageMetadata imageMetadata);
 
-/* MARK: - Examining an ImageIO_ImageProperty Object */
+/* MARK: - Examining an ImageIO_ImageMetadata Object */
 /**
  * Returns the width of the image, in the image's coordinate space.
  *
- * - Parameter imageProperty: The image property object to examine.
+ * - Parameter imageMetadata: The image metadata object to examine.
  *
  * - Returns: An integer that specifies the width of the image.
  */
 Foundation_UnsignedInteger64
-ImageIO_ImageProperty_GetWidth(ImageIO_ImageProperty imageProperty)
-SWIFT_NAME(getter:ImageProperty.width(self:));
+ImageIO_ImageMetadata_GetWidth(ImageIO_ImageMetadata imageMetadata)
+SWIFT_NAME(getter:ImageMetadata.width(self:));
 
 /**
  * Returns the height of the image, in the image's coordinate space.
  *
- * - Parameter imageProperty: The image property object to examine.
+ * - Parameter imageMetadata: The image metadata object to examine.
  *
  * - Returns: An integer that specifies the height of the image.
  */
 Foundation_UnsignedInteger64
-ImageIO_ImageProperty_GetHeight(ImageIO_ImageProperty imageProperty)
-SWIFT_NAME(getter:ImageProperty.height(self:));
+ImageIO_ImageMetadata_GetHeight(ImageIO_ImageMetadata imageMetadata)
+SWIFT_NAME(getter:ImageMetadata.height(self:));
 
 /**
  * Returns the original date and time.
  *
- * - Parameter imageProperty: The image property object to examine.
+ * - Parameter imageMetadata: The image metadata object to examine.
  *
  * - Returns: A string that specifies the original date and time.
  */
 NULLABLE Foundation_String
-ImageIO_ImageProperty_GetEXIFDateTimeOriginal(
-  ImageIO_ImageProperty imageProperty
+ImageIO_ImageMetadata_GetEXIFDateTimeOriginal(
+  ImageIO_ImageMetadata imageMetadata
 )
-SWIFT_NAME(getter:ImageProperty.exifDateTimeOriginal(self:));
+SWIFT_NAME(getter:ImageMetadata.exifDateTimeOriginal(self:));
 
 ASSUME_NONNULL_END
 
-#endif /* ImageProperty_h */
+#endif /* ImageMetadata_h */
