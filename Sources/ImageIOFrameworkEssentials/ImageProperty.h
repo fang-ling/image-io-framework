@@ -29,6 +29,7 @@ struct _ImageIO_ImageProperty {
 
   Foundation_UnsignedInteger64 _width;
   Foundation_UnsignedInteger64 _height;
+  NULLABLE Foundation_String _exifDateTimeOriginal;
 }
 SWIFT_NAME(ImageProperty)
 SWIFT_SHARED_REFERENCE(ImageIO_ImageProperty_Retain,
@@ -48,9 +49,12 @@ typedef const struct _ImageIO_ImageProperty* ImageIO_ImageProperty;
  *   using ``ImageIO_ImageProperty_Release``.
  */
 ImageIO_ImageProperty
-ImageIO_ImageProperty_Initialize(Foundation_UnsignedInteger64 width,
-                                 Foundation_UnsignedInteger64 height)
-SWIFT_NAME(ImageProperty.init(width:height:))
+ImageIO_ImageProperty_Initialize(
+  Foundation_UnsignedInteger64 width,
+  Foundation_UnsignedInteger64 height,
+  NULLABLE Foundation_String exifDateTimeOriginal
+)
+SWIFT_NAME(ImageProperty.init(width:height:exifDateTimeOriginal:))
 SWIFT_RETURNS_RETAINED;
 
 /**
@@ -94,6 +98,19 @@ SWIFT_NAME(getter:ImageProperty.width(self:));
 Foundation_UnsignedInteger64
 ImageIO_ImageProperty_GetHeight(ImageIO_ImageProperty imageProperty)
 SWIFT_NAME(getter:ImageProperty.height(self:));
+
+/**
+ * Returns the original date and time.
+ *
+ * - Parameter imageProperty: The image property object to examine.
+ *
+ * - Returns: A string that specifies the original date and time.
+ */
+NULLABLE Foundation_String
+ImageIO_ImageProperty_GetEXIFDateTimeOriginal(
+  ImageIO_ImageProperty imageProperty
+)
+SWIFT_NAME(getter:ImageProperty.exifDateTimeOriginal(self:));
 
 ASSUME_NONNULL_END
 

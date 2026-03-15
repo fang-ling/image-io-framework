@@ -24,14 +24,22 @@
 ASSUME_NONNULL_BEGIN
 
 ImageIO_ImageProperty
-ImageIO_ImageProperty_Initialize(Foundation_UnsignedInteger64 width,
-                                 Foundation_UnsignedInteger64 height) {
+ImageIO_ImageProperty_Initialize(
+  Foundation_UnsignedInteger64 width,
+  Foundation_UnsignedInteger64 height,
+  NULLABLE Foundation_String exifDateTimeOriginal
+) {
+  if (exifDateTimeOriginal != NULL) {
+    Foundation_String_Retain(exifDateTimeOriginal);
+  }
+
   let objectSize = sizeof(struct _ImageIO_ImageProperty);
   let imageProperty = (struct _ImageIO_ImageProperty*)malloc(objectSize);
   imageProperty->_objectBase.retainCount = 1;
 
   imageProperty->_width = width;
   imageProperty->_height = height;
+  imageProperty->_exifDateTimeOriginal = exifDateTimeOriginal;
 
   return imageProperty;
 }
@@ -45,6 +53,9 @@ void ImageIO_ImageProperty_Release(ImageIO_ImageProperty imageProperty) {
     Foundation_ObjectBase_Release(&imageProperty->_objectBase);
 
   if (shouldDeallocate) {
+    if (imageProperty->_exifDateTimeOriginal != NULL) {
+      Foundation_String_Release(imageProperty->_exifDateTimeOriginal);
+    }
     free((struct _ImageIO_ImageProperty*)imageProperty);
   }
 }
@@ -67,6 +78,18 @@ ImageIO_ImageProperty_GetHeight(ImageIO_ImageProperty imageProperty) {
 
   ImageIO_ImageProperty_Release(imageProperty);
   return height;
+}
+
+NULLABLE Foundation_String
+ImageIO_ImageProperty_GetEXIFDateTimeOriginal(
+  ImageIO_ImageProperty imageProperty
+) {
+  ImageIO_ImageProperty_Retain(imageProperty);
+
+  let exifDateTimeOriginal = imageProperty->_exifDateTimeOriginal;
+
+  ImageIO_ImageProperty_Release(imageProperty);
+  return exifDateTimeOriginal;
 }
 
 ASSUME_NONNULL_END
