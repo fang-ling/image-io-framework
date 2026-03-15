@@ -63,5 +63,6 @@ let package = Package(
         "ImageIOFramework"
       ]
     )
-  ]
+  ],
+  cLanguageStandard: .c89
 )
